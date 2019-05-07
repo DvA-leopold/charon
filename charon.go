@@ -1,30 +1,17 @@
 package main
 
 import (
-	"fmt"
+	"charon/methods"
 	"net/http"
 	"sync"
 )
 
-func test(http.ResponseWriter, *http.Request) {
-	fmt.Println("hello server")
-}
-
-func auth(out http.ResponseWriter, req *http.Request) {
-	fmt.Println("hello auth")
-}
-
-func initTCPServer() {
-
-}
-
 func initHTTPServer() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/test", test)
-	mux.HandleFunc("/login", auth)
+	mux.HandleFunc("/webdav/", methods.RedirectWebdav)
 
 	server := &http.Server{
-		Addr:    "0.0.0.0:8080",
+		Addr:    "0.0.0.0:8081",
 		Handler: mux,
 	}
 
@@ -33,10 +20,9 @@ func initHTTPServer() {
 
 func main() {
 	var wg sync.WaitGroup
-	wg.Add(2)
+	wg.Add(1)
 
 	go initHTTPServer()
-	go initTCPServer()
 
 	wg.Wait()
 }
