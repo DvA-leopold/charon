@@ -12,3 +12,5 @@
 *.out
 
 charon
+.idea/
+playground/

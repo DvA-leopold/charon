@@ -1,4 +1,4 @@
-package tcp_server
+package core
 
 import (
 	"bufio"
@@ -97,7 +97,7 @@ func (s *server) Listen() {
 }
 
 // Creates new tcp server instance
-func New(address string) *server {
+func InitTCPServer(address string) *server {
 	log.Println("Creating server with address", address)
 	server := &server{
 		address: address,
@@ -111,7 +111,7 @@ func New(address string) *server {
 	return server
 }
 
-func NewWithTLS(address string, certFile string, keyFile string) *server {
+func InitTCPServerTLS(address string, certFile string, keyFile string) *server {
 	log.Println("Creating server with address", address)
 	cert, _ := tls.LoadX509KeyPair(certFile, keyFile)
 	config := tls.Config{

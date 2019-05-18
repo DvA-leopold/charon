@@ -1,28 +1,26 @@
 package main
 
 import (
+	"charon/core"
 	"charon/methods"
 	"net/http"
-	"sync"
 )
 
-func initHTTPServer() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/webdav/", methods.RedirectWebdav)
-
-	server := &http.Server{
-		Addr:    "0.0.0.0:8081",
-		Handler: mux,
+func init() {
+	core.ReadConfig("its_stub.txt")
+	if address, exist := core.Config["HTTPListen"]; exist {
+		core.InitHTTPServer(address,
+			map[string]func(w http.ResponseWriter, r *http.Request) {
+				"/auth/": methods.Auth,
+				"/updInfo/": methods.UpdateInfo,
+				"/addPod/": methods.AddPod,
+				"/attachPod/": methods.AttachPod,
+				"/webdav/": methods.RedirectWebdav,
+			})
 	}
-
-	server.ListenAndServe()
+	//core.InitTCPServer(core.Config["TCPListen"])
 }
 
 func main() {
-	var wg sync.WaitGroup
-	wg.Add(1)
-
-	go initHTTPServer()
-
-	wg.Wait()
+	core.WaitGroup.Wait()
 }
